@@ -1,0 +1,5 @@
+{
+  "name": "usage-bars-chat",
+  "owner": { "name": "HaHa-B0t" },
+  "plugins": [{ "name": "usage-bars-chat", "source": "./" }]
+}
