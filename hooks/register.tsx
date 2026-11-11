@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { Engine, Register } from 'claude-code'
+import type { EngineInterface as Engine, Register } from 'claude-code'
 
 import type { Window } from '../types'
 
@@ -201,19 +201,29 @@ export const register: Register = on => {
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    // Whatever other mods draw in this band (e.g. Prompt Master's button)
+    // stays, on the same row as the bars.
+    const below = await next(e)
     await read($, tick)
     const now = await $.clock.now()
     const list = current(await read($, windows), now)
-    if (e.props.hasSurvey || list.length === 0) return next(e)
+    if (e.props.hasSurvey || list.length === 0) return below
 
     const els = $.ui.resolve(e)
     const { Box, Text } = els
 
     const quote = `“${QUOTES[Math.floor(now / QUOTE_MS) % QUOTES.length]}”`
 
+    // One row: whatever other mods draw here first (e.g. Prompt Master's
+    // star), then the bars, then the quote.
     return (
       <Box flexDirection="row" justifyContent="space-between" gap={3}>
         <Box flexDirection="row" gap={3} flexShrink={0}>
+        {below ? (
+          <Box key="others" flexDirection="row">
+            {below}
+          </Box>
+        ) : null}
         {list.map(w => {
           const pct = Math.max(0, Math.min(100, w.percentUsed))
           const filled = Math.round((pct / 100) * WIDTH)
