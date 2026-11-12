@@ -1,1 +1,1 @@
-{ "name": "usage-bars-chat", "version": "0.14.0", "description": "5-hour and 7-day usage limits as solid bars in the band above the prompt", "types": "./types/index.d.ts" }
+{ "name": "usage-bars-chat", "version": "0.15.0", "description": "5-hour and 7-day usage limits as solid bars in the band above the prompt", "types": "./types/index.d.ts" }

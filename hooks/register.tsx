@@ -7,6 +7,8 @@ const windows = atom({ plugin: 'usage-bars-chat', key: 'windows' } as const, [] 
 
 // Quote ticker width in cells; the scrolling runs in ./ticker.tsx
 const TICKER_WIDTH = 40
+// The ticker gives up room down to this when the row is tight, then scrolls
+const TICKER_MIN = 12
 
 const LABELS: Record<string, string> = {
   five_hour: '5h',
@@ -217,8 +219,9 @@ export const register: Register = on => {
     // One row: whatever other mods draw here first (e.g. Prompt Master's
     // star), then the bars, then the quote.
     return (
-      <Box flexDirection="row" justifyContent="space-between" gap={3}>
-        <Box flexDirection="row" gap={3} flexShrink={0}>
+      // Gaps of 2 (were 3): gives back the room Prompt Master's 💬 takes, so the quote keeps its width
+      <Box flexDirection="row" justifyContent="space-between" gap={2}>
+        <Box flexDirection="row" gap={2} flexShrink={0}>
         {below ? (
           <Box key="others" flexDirection="row">
             {below}
@@ -242,9 +245,9 @@ export const register: Register = on => {
           )
         })}
         </Box>
-        <Box width={TICKER_WIDTH} flexShrink={0}>
+        <Box width={TICKER_WIDTH} flexShrink={1} minWidth={TICKER_MIN}>
           {'Client' in els ? (
-            <els.Client key="ticker" module="./ticker.tsx" props={{ text: quote, width: TICKER_WIDTH }} width={TICKER_WIDTH} />
+            <els.Client key="ticker" module="./ticker.tsx" props={{ text: quote, width: TICKER_WIDTH }} width="100%" />
           ) : (
             <Text dimColor italic wrap="truncate-end">{quote}</Text>
           )}

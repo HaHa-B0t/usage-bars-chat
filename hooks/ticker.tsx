@@ -15,14 +15,17 @@ const Ticker: ClientModule<Props, State> = (props, surface) => {
     surface.every(STEP_MS, () => surface.setState({ step: (surface.state?.step ?? 0) + 1 }))
   }
 
+  // The room the row really gave us (it shrinks when the row is tight),
+  // never more than asked; before the first layout, the asked width.
   const { text, width } = props
-  if (text.length <= width) {
+  const room = surface.columns > 0 ? Math.min(width, surface.columns) : width
+  if (text.length <= room) {
     return <Text dimColor italic>{text}</Text>
   }
 
   const loop = text + GAP
   const at = (surface.state?.step ?? 0) % loop.length
-  return <Text dimColor italic mono wrap="truncate-end">{(loop + loop).slice(at, at + width)}</Text>
+  return <Text dimColor italic mono wrap="truncate-end">{(loop + loop).slice(at, at + room)}</Text>
 }
 
 export default Ticker
